@@ -1,6 +1,6 @@
 import React from 'react';
 import { Recipe, RecipeCategory, Difficulty } from '../../types';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../ui/Card';
+import Card, { CardHeader, CardTitle, CardContent, CardDescription } from '../ui/Card';
 import Button from '../ui/Button';
 
 export interface RecipeCardProps {
