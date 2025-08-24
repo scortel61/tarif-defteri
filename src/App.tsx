@@ -1,90 +1,78 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useRecipeStore } from './store/recipeStore';
-import { Button, Card } from './components';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Header from './components/layout/Header';
+import './index.css';
 
 function App() {
-  const { loadFromLocalStorage } = useRecipeStore();
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  // Load data from localStorage on app start
   useEffect(() => {
-    loadFromLocalStorage();
-  }, [loadFromLocalStorage]);
+    // Check for saved theme preference or default to system preference
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const currentTheme = savedTheme || systemTheme;
+    
+    setTheme(currentTheme);
+    document.documentElement.classList.toggle('dark', currentTheme === 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+  };
 
   return (
-    <Router>
-      <div className="min-h-screen bg-neutral-50">
-        <header className="bg-white shadow-sm border-b border-neutral-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-primary-600">
-                  🍳 Tarif Defteri
-                </h1>
-              </div>
-              <nav className="hidden md:flex space-x-8">
-                <a href="/" className="text-neutral-600 hover:text-primary-600 transition-colors">
-                  Ana Sayfa
-                </a>
-                <a href="/add-recipe" className="text-neutral-600 hover:text-primary-600 transition-colors">
-                  Yeni Tarif
-                </a>
-              </nav>
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 transition-colors duration-200">
+      <Header onThemeToggle={toggleTheme} theme={theme} />
+      
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">
+            🍳 Tarif Defteri'ne Hoş Geldiniz!
+          </h1>
+          <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-8 max-w-2xl mx-auto">
+            Kişisel yemek tariflerinizi dijital ortamda saklayın, organize edin ve kolayca erişin. 
+            Modern ve kullanıcı dostu arayüz ile tarif yönetimi artık çok kolay!
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Feature Card 1 */}
+            <div className="card p-6 text-center">
+              <div className="text-3xl mb-4">📝</div>
+              <h3 className="text-xl font-semibold mb-2">Tarif Ekleme</h3>
+              <p className="text-neutral-600 dark:text-neutral-400">
+                Yeni tariflerinizi kolayca ekleyin ve organize edin
+              </p>
             </div>
-          </div>
-        </header>
-
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
-              Hoş Geldiniz! 🎉
-            </h2>
-            <p className="text-lg text-neutral-600 mb-8">
-              Tarif defteri uygulaması başarıyla kuruldu. Şimdi component'leri geliştirmeye başlayabiliriz.
-            </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <h3 className="text-xl font-semibold text-neutral-900 mb-2">✅ Proje Kurulumu</h3>
-                <p className="text-neutral-600 mb-4">Vite + React + TypeScript + Tailwind CSS</p>
-                <Button variant="outline" size="sm">Detaylar</Button>
-              </Card>
-              
-              <Card>
-                <h3 className="text-xl font-semibold text-neutral-900 mb-2">🔧 State Management</h3>
-                <p className="text-neutral-600 mb-4">Zustand store ile recipe yönetimi</p>
-                <Button variant="outline" size="sm">Detaylar</Button>
-              </Card>
-              
-              <Card>
-                <h3 className="text-xl font-semibold text-neutral-900 mb-2">📱 Responsive Design</h3>
-                <p className="text-neutral-600 mb-4">Mobile-first yaklaşım</p>
-                <Button variant="outline" size="sm">Detaylar</Button>
-              </Card>
+            {/* Feature Card 2 */}
+            <div className="card p-6 text-center">
+              <div className="text-3xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold mb-2">Akıllı Arama</h3>
+              <p className="text-neutral-600 dark:text-neutral-400">
+                Tarif adı, malzeme veya kategori bazlı hızlı arama
+              </p>
             </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-neutral-900">Component Örnekleri</h3>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button variant="primary">Primary Button</Button>
-                <Button variant="secondary">Secondary Button</Button>
-                <Button variant="outline">Outline Button</Button>
-                <Button variant="ghost">Ghost Button</Button>
-              </div>
+            
+            {/* Feature Card 3 */}
+            <div className="card p-6 text-center">
+              <div className="text-3xl mb-4">💾</div>
+              <h3 className="text-xl font-semibold mb-2">Güvenli Saklama</h3>
+              <p className="text-neutral-600 dark:text-neutral-400">
+                Verileriniz cihazınızda güvenle saklanır
+              </p>
             </div>
           </div>
-        </main>
-
-        <footer className="bg-white border-t border-neutral-200 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center text-neutral-600">
-              <p>&copy; 2024 Tarif Defteri. Tüm hakları saklıdır.</p>
-            </div>
+          
+          <div className="mt-12">
+            <button className="btn-primary text-lg px-8 py-3">
+              İlk Tarifinizi Ekleyin
+            </button>
           </div>
-        </footer>
-      </div>
-    </Router>
+        </div>
+      </main>
+    </div>
   );
 }
 
